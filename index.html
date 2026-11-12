@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detektif Cilik: Brankas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: radial-gradient(circle at center, #1e293b, #020617);
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Container Utama */
+        .container-box {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 2px 2px rgba(255,255,255,0.1), inset 0 -2px 5px rgba(0,0,0,0.5);
+            border: 1px solid #334155;
+            text-align: center;
+            width: 380px;
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+
+        h1.title {
+            font-family: 'Orbitron', sans-serif;
+            color: #fbbf24;
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 2em;
+            text-shadow: 0 0 15px rgba(251,191,36,0.4);
+        }
+        h2.subtitle {
+            margin-top: 0;
+            font-size: 1.5em;
+            letter-spacing: 4px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        /* Tombol Menu Utama */
+        .btn-menu {
+            width: 100%;
+            background: linear-gradient(to right, #0ea5e9, #2563eb);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 1px;
+            font-family: 'Rajdhani', sans-serif;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .btn-menu:hover {
+            box-shadow: 0 0 15px rgba(14,165,233,0.5);
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: linear-gradient(to right, #475569, #334155);
+            color: #e2e8f0;
+        }
+        .btn-secondary:hover {
+            box-shadow: 0 0 15px rgba(148,163,184,0.3);
+            border: 1px solid #94a3b8;
+        }
+
+        /* Form Setup */
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #cbd5e1; font-size: 1.1em; }
+        .form-group input {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569;
+            background-color: #0f172a; color: #0ea5e9; font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1em; outline: none; transition: all 0.3s;
+        }
+        .form-group input:focus { border-color: #0ea5e9; box-shadow: 0 0 10px rgba(14,165,233,0.3); }
+
+        /* Layar Brankas (Keypad) */
+        .screen {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #000; color: #0ea5e9; font-size: 2em; padding: 20px 10px;
+            margin-bottom: 30px; border-radius: 8px; letter-spacing: 5px; min-height: 80px;
+            display: flex; justify-content: center; align-items: center;
+            border: 2px solid #0f172a; box-shadow: inset 0 0 15px rgba(14,165,233,0.15), 0 0 10px rgba(0,0,0,0.5);
+            text-shadow: 0 0 8px rgba(14,165,233,0.8); transition: all 0.3s ease; word-wrap: break-word;
+        }
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .btn {
+            font-family: 'Orbitron', sans-serif; background: linear-gradient(to bottom, #334155, #1e293b);
+            color: #cbd5e1; border: 1px solid #475569; padding: 18px 0; font-size: 1.4em;
+            border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+            transition: all 0.2s ease;
+        }
+        .btn:hover { background: linear-gradient(to bottom, #475569, #334155); color: #fff; border-color: #0ea5e9; transform: translateY(-2px); }
+        .btn:active { transform: translateY(2px); box-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        .btn-clear { color: #fca5a5; } .btn-clear:hover { border-color: #ef4444; color: #fef2f2; }
+        .btn-enter { color: #86efac; } .btn-enter:hover { border-color: #10b981; color: #ecfdf5; }
+
+        /* Layar Hadiah */
+        .highlight-prize { color: #38bdf8; font-size: 1.6em; font-weight: bold; margin-top: 20px; letter-spacing: 2px; text-transform: uppercase; }
+        
+        /* Modal Petunjuk */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); justify-content: center; align-items: center; z-index: 10;
+        }
+        .modal-content {
+            background: #1e293b; padding: 30px; border-radius: 15px; width: 90%; max-width: 450px;
+            border: 1px solid #475569; box-shadow: 0 0 30px rgba(0,0,0,0.8); text-align: left;
+        }
+        .modal-content h3 { color: #fbbf24; margin-top: 0; text-align: center; }
+        .modal-content ol { color: #cbd5e1; padding-left: 20px; line-height: 1.6; text-align: left; }
+        
+        .error-state { color: #ef4444 !important; text-shadow: 0 0 8px rgba(239,68,68,0.8) !important; box-shadow: inset 0 0 15px rgba(239,68,68,0.15) !important; }
+        
+        /* Footer Kredit */
+        .footer { margin-top: 25px; font-size: 0.75em; color: #64748b; letter-spacing: 0.5px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <!-- 1. HALAMAN UTAMA -->
+    <div class="container-box" id="homeScreen">
+        <h1 class="title">DETEKTIF CILIK:</h1>
+        <h2 class="subtitle">"Brankas"</h2>
+        
+        <button class="btn-menu" onclick="showScreen('setupScreen')">BUAT KASUS</button>
+        <button class="btn-menu" onclick="openVault()">PECAHKAN KASUS</button>
+        <button class="btn-menu btn-secondary" style="margin-bottom: 0;" onclick="toggleModal('instructionModal', true)">PETUNJUK</button>
+        
+        <div class="footer">Dibuat oleh: 
+		<br><b>Dede Ardi Hikmatulloh, S.Th.I</b>
+		<br>© 2025 - Portal PAI Dasar</div>
+    </div>
+
+    <!-- 2. HALAMAN PENGATURAN (GURU) -->
+    <div class="container-box" id="setupScreen" style="display: none;">
+        <h2 class="subtitle" style="color: #cbd5e1;">Panel Kontrol</h2>
+        <div class="form-group">
+            <label>Nama Kasus:</label>
+            <input type="text" id="inputCaseName" placeholder="-" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label>Kode:</label>
+            <input type="password" id="inputCode" placeholder="-" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label>Hadiah:</label>
+            <input type="text" id="inputPrize" placeholder="-" autocomplete="off">
+        </div>
+        <button class="btn-menu" onclick="saveCase()">SIMPAN</button>
+        <button class="btn-menu btn-secondary" onclick="showScreen('homeScreen')">KEMBALI</button>
+    </div>
+
+    <!-- 3. HALAMAN BRANKAS -->
+    <div class="container-box" id="vaultScreen" style="display: none;">
+        <h2 class="subtitle" id="displayCaseName" style="margin-bottom: 20px; font-size: 1.1em; color: #fbbf24;">Misi Rahasia</h2>
+        <div class="screen" id="screen">_ _ _ _ _</div>
+        <div class="keypad">
+            <button class="btn" onclick="pressKey('1')">1</button>
+            <button class="btn" onclick="pressKey('2')">2</button>
+            <button class="btn" onclick="pressKey('3')">3</button>
+            <button class="btn" onclick="pressKey('4')">4</button>
+            <button class="btn" onclick="pressKey('5')">5</button>
+            <button class="btn" onclick="pressKey('6')">6</button>
+            <button class="btn" onclick="pressKey('7')">7</button>
+            <button class="btn" onclick="pressKey('8')">8</button>
+            <button class="btn" onclick="pressKey('9')">9</button>
+            <button class="btn btn-clear" onclick="clearScreen()">C</button>
+            <button class="btn" onclick="pressKey('0')">0</button>
+            <button class="btn btn-enter" onclick="checkCode()">E</button>
+        </div>
+        <button class="btn-menu btn-secondary" style="margin-top: 20px; padding: 10px; font-size: 1em;" onclick="showScreen('homeScreen')">Batal</button>
+    </div>
+
+    <!-- 4. HALAMAN BERHASIL -->
+    <div class="container-box" id="prizeScreen" style="display: none; border-color: #fbbf24; box-shadow: 0 0 30px rgba(251,191,36,0.3);">
+        <h1 class="title">SELAMAT!</h1>
+        <p style="color: #94a3b8;">Kasus terselesaikan, brankas berhasil dibuka.</strong></p>
+        <p style="font-size: 1.2em; color: #e2e8f0; margin-bottom: 5px;">Kamu berhak mendapatkan:</p>
+        <p class="highlight-prize" id="displayPrize">💎 HADIAH 💎</p>
+        
+        <button class="btn-menu" style="margin-top: 30px;" onclick="closeCase()">TUTUP KASUS</button>
+    </div>
+
+    <!-- MODAL PETUNJUK -->
+    <div id="instructionModal" class="modal">
+        <div class="modal-content">
+            <h3>PETUNJUK PERMAINAN</h3>
+            <ol>
+                <li><strong>Buat Kasus:</strong><br>Menu ini digunakan untuk memasukkan judul kasus (topik/tema), kode (kombinasi angka yang merupakan jawaban benar dari kasus yang dibuat), dan hadiah.</li>
+                <li><strong>Pecahkan Kasus:</strong><br>Menu ini menampilkan brankas, di mana peserta harus memasukkan kode yang tepat untuk membukanya.</li>
+                <li><strong>Brankas:</strong><br>Jika kode benar, brankas akan terbuka dan hadiah ditampilkan! Jika salah, layar akan memunculkan pesan "error".</li>
+				<li><strong>Lembar Kasus:</strong><br>Peserta memecahkan kasus sesuai petunjuk yang diberikan untuk menemukan kombinasi angka (kode).
+				<br><a href="https://drive.google.com/drive/folders/1TQc87PlCunru427PcPKEyRO5-zzpIqo6?usp=sharing" target="_blank" style="color: #38bdf8; text-decoration: none; font-weight: bold; background: #0f172a; padding: 5px 10px; border-radius: 5px; border: 1px solid #38bdf8; display: inline-block; margin-top: 5px;">Lihat Contoh Lembar Kasus</a></li>
+                
+            </ol>
+            <button class="btn-menu btn-secondary" onclick="toggleModal('instructionModal', false)">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        // Variabel Data Permainan
+        let activeCode = "";
+        let activePrize = "";
+        let currentInput = "";
+
+        // Fungsi Perpindahan Layar
+        function showScreen(screenId) {
+            document.getElementById('homeScreen').style.display = 'none';
+            document.getElementById('setupScreen').style.display = 'none';
+            document.getElementById('vaultScreen').style.display = 'none';
+            document.getElementById('prizeScreen').style.display = 'none';
+            
+            document.getElementById(screenId).style.display = 'block';
+        }
+
+        // Fungsi Modal
+        function toggleModal(modalId, show) {
+            document.getElementById(modalId).style.display = show ? 'flex' : 'none';
+        }
+
+        // Simpan Kasus oleh Guru
+        function saveCase() {
+            const caseName = document.getElementById("inputCaseName").value.trim() || "MISI RAHASIA";
+            const code = document.getElementById("inputCode").value.trim();
+            const prize = document.getElementById("inputPrize").value.trim() || "NILAI TAMBAHAN +100!";
+
+            if (code === "" || isNaN(code)) {
+                alert("Masukkan kombinasi angka sebagai kode!");
+                return;
+            }
+
+            activeCode = code;
+            activePrize = prize;
+
+            document.getElementById("displayCaseName").innerText = caseName;
+            document.getElementById("displayPrize").innerText = "💎" + prize + "💎";
+
+            alert("Kasus berhasil disimpan! Silakan klik 'Pecahkan Kasus' untuk mulai bermain.");
+            showScreen('homeScreen'); // Kembali ke halaman utama setelah simpan
+        }
+
+        // Buka Layar Brankas
+        function openVault() {
+            if (activeCode === "") {
+                alert("Belum ada kasus yang tersimpan, silakan buat kasus terlebih dahulu!");
+                return;
+            }
+            clearScreen(); // Reset layar keypad
+            showScreen('vaultScreen');
+        }
+
+        // Logika Layar (Screen) Brankas
+        const screenUI = document.getElementById("screen");
+
+        function updateScreen() {
+            let codeLength = activeCode.length;
+            let displayStr = currentInput.split('').join(' ');
+            let placeholders = Array(codeLength - currentInput.length).fill('_').join(' ');
+            
+            if (currentInput.length > 0) {
+                screenUI.innerText = displayStr + (placeholders ? ' ' + placeholders : '');
+            } else {
+                screenUI.innerText = Array(codeLength).fill('_').join(' ');
+            }
+        }
+
+        function pressKey(num) {
+            screenUI.classList.remove("error-state");
+            if (currentInput === "ERROR") currentInput = "";
+            
+            if (currentInput.length < activeCode.length) {
+                currentInput += num;
+                updateScreen();
+            }
+        }
+
+        function clearScreen() {
+            currentInput = "";
+            screenUI.classList.remove("error-state");
+            updateScreen();
+        }
+
+        function checkCode() {
+            if (currentInput.length < activeCode.length) return; 
+
+            if (currentInput === activeCode) {
+                showScreen('prizeScreen');
+            } else {
+                currentInput = "ERROR";
+                screenUI.innerText = "ERROR";
+                screenUI.classList.add("error-state");
+                setTimeout(clearScreen, 1500);
+            }
+        }
+
+        // Selesai Permainan & Kembali ke Utama
+        function closeCase() {
+            // Mengosongkan data agar siap untuk ronde selanjutnya
+            document.getElementById("inputCaseName").value = "";
+            document.getElementById("inputCode").value = "";
+            document.getElementById("inputPrize").value = "";
+            activeCode = "";
+            activePrize = "";
+            
+            showScreen('homeScreen');
+        }
+    </script>
+</body>
+</html>
